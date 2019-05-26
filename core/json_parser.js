@@ -10,13 +10,18 @@ const json_parser = class {
     }
 
     async run(){
-        await this.scraper.init()
-        for(let i = 0; i< this.process_list.length; i++){
-            await this.detect_type_and_run(this.process_list[i])
+        try{
+            await this.scraper.init()
+            for(let i = 0; i< this.process_list.length; i++){
+                await this.detect_type_and_run(this.process_list[i])
+            }
+            this.isDone = true
+            this.scraper.quit();
+            return this.output_list;
+        }catch (e) {
+            console.error(e);
+            throw e;
         }
-        this.isDone = true
-        this.scraper.quit();
-        return this.output_list;
     }
 
     async detect_type_and_run(json_object){
