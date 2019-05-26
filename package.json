@@ -4,7 +4,10 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
-    "build": "nexe -i ./bin/www -r app.js core/* views/* routes/* package.json"
+    "buildLinux": "nexe -i ./bin/www -r app.js core/* views/* routes/* package.json -o gui-scraper-core-linux -t linux-x64",
+    "buildMacos": "nexe -i ./bin/www -r app.js core/* views/* routes/* package.json -o gui-scraper-core-macos -t darwin-10.13.0",
+    "buildWindows-x64": "nexe -i ./bin/www -r app.js core/* views/* routes/* package.json -o gui-scraper-core-windows-x64.exe -t windows-x64-6.11.2",
+    "buildWindows-x86": "nexe -i ./bin/www -r app.js core/* views/* routes/* package.json -o gui-scraper-core-windows-x86.exe -t windows-x86-6.11.2"
   },
   "bin": {
     "app": "./bin/www"
