@@ -43,7 +43,7 @@ const scraper = class {
         try{
             document.querySelector(lsp_substring);
             return_string = lsp_substring;
-        }catch{
+        }catch(e){
             for(let i=0; i<splited_lsp.length - 1; i++){
                 if (i === 0){
                     return_string += splited_lsp[i];
