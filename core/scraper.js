@@ -1,9 +1,6 @@
-require('chromedriver');
-const web_driver = require('./web_driver.js');
 const WEB_BROWSER = Symbol();
 const WEB_DRIVER = Symbol();
 const URL = Symbol();
-const {By, until} = require('selenium-webdriver');
 const puppeteer = require('puppeteer');
 
 const scraper = class {
