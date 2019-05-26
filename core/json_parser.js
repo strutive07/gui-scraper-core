@@ -10,6 +10,7 @@ const json_parser = class {
     }
 
     async run(){
+        await this.scraper.init()
         for(let i = 0; i< this.process_list.length; i++){
             await this.detect_type_and_run(this.process_list[i])
         }
@@ -74,7 +75,7 @@ const json_parser = class {
             let process_output = [];
             for (let i=0; i<list_items.length; i++){
                 try{
-                    let text = await list_items[i].getText();
+                    let text = await this.scraper.getText(list_items[i]);
                     process_output.push(text);
                 }catch(e){
                     continue;
@@ -122,7 +123,7 @@ const json_parser = class {
                 for(let j=0; j<childs.length; j++){
                     let child_css_selector = childs[j].css_selector.split(li_parent_css_selector);
                     const element = await this.scraper.find_one_element(child_css_selector[0], list_items[i]);
-                    let text = await element.getText();
+                    let text = await this.scraper.getText(element);
                     inner_process_output.push(text);
                 }
                 process_output.push(inner_process_output);

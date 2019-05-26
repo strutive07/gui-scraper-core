@@ -1,17 +1,22 @@
 require('chromedriver');
 const web_driver = require('./web_driver.js');
+const WEB_BROWSER = Symbol();
 const WEB_DRIVER = Symbol();
 const URL = Symbol();
 const {By, until} = require('selenium-webdriver');
+const puppeteer = require('puppeteer');
 
 const scraper = class {
     constructor(url, options){
         if(scraper.checkUrlForm(url) === false){
             throw "Invalid Url form"
         }
-        this[WEB_DRIVER] = web_driver(options);
         this[URL] = url;
-        this[WEB_DRIVER].get(this[URL]);
+    }
+    async init(){
+        this[WEB_BROWSER] = await puppeteer.launch();
+        this[WEB_DRIVER] = await this[WEB_BROWSER].newPage();
+        await this[WEB_DRIVER].goto(this[URL]);
     }
     static checkUrlForm(url){
         const expUrl = /^http[s]?\:\/\//i;
@@ -56,32 +61,32 @@ const scraper = class {
     async find_one_element(css_selector, base = this[WEB_DRIVER]){
         let wait_element = await this.waitCss(10000, css_selector);
         if(wait_element){
-            return base.findElement(By.css(css_selector))
+            return base.$(css_selector)
         }
         return null
     }
     async find_one_element_and_get_text(css_selector){
         let element = await this.find_one_element(css_selector);
-        return await element.getText()
+        return this.getText(element)
+    }
+    async getText(element){
+        return await this[WEB_DRIVER].evaluate(element => element.textContent, element);
     }
     async find_many_elements(css_selector, base = this[WEB_DRIVER]){
         let wait_element = await this.waitCss(10000, css_selector);
         if(wait_element){
-            return base.findElements(By.css(css_selector));
+            return base.$$(css_selector);
         }
         return null
     }
     async waitCss(time, css, base = this[WEB_DRIVER]){
-        return base.wait(until.elementLocated(By.css(css)), time);
-    }
-    get action(){
-        return this[WEB_DRIVER].actions();
+        return base.waitForSelector(css, {timeout: 10000})
     }
     get url(){
         return this[URL];
     }
     quit(){
-        this[WEB_DRIVER].quit();
+        this[WEB_DRIVER].close();
     }
 };
 
